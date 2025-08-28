@@ -9,6 +9,10 @@ import androidx.navigation.compose.*
 import com.example.fooddeliveryapp.ui.screen.WelcomeScreen
 import com.example.fooddeliveryapp.ui.screen.LoginScreen
 import com.example.fooddeliveryapp.ui.screen.SignupScreen
+import com.example.fooddeliveryapp.ui.screen.VendorAddItemScreen
+import com.example.fooddeliveryapp.ui.screen.VendorOrdersScreen
+import com.example.fooddeliveryapp.ui.screen.VendorUpdateScreen
+import com.example.fooddeliveryapp.ui.screen.VendorWelcomeScreen
 
 @Composable
 fun AppNavigation() {
@@ -22,6 +26,7 @@ fun AppNavigation() {
             )
         }
         composable("login") {
+
             LoginScreen(navController)
         }
 
@@ -29,6 +34,19 @@ fun AppNavigation() {
             SignupScreen(navController)
         }
 
+        // 🔹 Vendor routes
+        composable("vendor_welcome") {
+            VendorWelcomeScreen(navController)
+        }
+        composable("vendor_orders") {
+            VendorOrdersScreen(navController)
+        }
+        composable("vendor_add_item") {
+            VendorAddItemScreen(navController)
+        }
+        composable("vendor_update") {
+            VendorUpdateScreen(navController)
+        }
 //
 //        // 🔹 Student Home
 //        composable("student_home") {

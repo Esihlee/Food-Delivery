@@ -6,10 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.fooddeliveryapp.data.dao.FoodDAO
 import com.example.fooddeliveryapp.data.entity.FoodItem
+import com.example.fooddeliveryapp.data.dao.VendorDao
+import com.example.fooddeliveryapp.data.entity.Vendor
 
-@Database(entities = [FoodItem::class], version = 1)
+@Database(entities = [FoodItem::class], [Vendor::class],version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun foodDao(): FoodDAO
+    abstract fun vendorDao(): VendorDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
