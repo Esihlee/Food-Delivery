@@ -12,6 +12,10 @@ import com.example.fooddeliveryapp.ui.screen.LoginScreen
 import com.example.fooddeliveryapp.ui.screen.MenuScreen
 import com.example.fooddeliveryapp.ui.screen.SignupScreen
 import com.example.fooddeliveryapp.ui.screen.WelcomeScreen
+import com.example.fooddeliveryapp.ui.screen.VendorAddItemScreen
+import com.example.fooddeliveryapp.ui.screen.VendorOrdersScreen
+import com.example.fooddeliveryapp.ui.screen.VendorUpdateScreen
+import com.example.fooddeliveryapp.ui.screen.VendorWelcomeScreen
 
 @Composable
 fun AppNavigation(db: AppDatabase) {
@@ -35,6 +39,8 @@ fun AppNavigation(db: AppDatabase) {
                     }
                 }
             )
+
+            LoginScreen(navController)
         }
 
         composable("signup") {
@@ -50,6 +56,34 @@ fun AppNavigation(db: AppDatabase) {
         }
 
         // Add other screens here as needed
+        // 🔹 Vendor routes
+        composable("vendor_welcome") {
+            VendorWelcomeScreen(navController)
+        }
+        composable("vendor_orders") {
+            VendorOrdersScreen(navController)
+        }
+        composable("vendor_add_item") {
+            VendorAddItemScreen(navController)
+        }
+        composable("vendor_update") {
+            VendorUpdateScreen(navController)
+        }
+//
+//        // 🔹 Student Home
+//        composable("student_home") {
+//            StudentHomeScreen(navController)
+//        }
+//
+//        // 🔹 Lecturer Home
+//        composable("lecturer_home") {
+//            LecturerHomeScreen(navController)
+//        }
+//
+//        // 🔹 Vendor Home
+//        composable("vendor_home") {
+//            VendorHomeScreen(navController)
+//        }
     }
 }
 
