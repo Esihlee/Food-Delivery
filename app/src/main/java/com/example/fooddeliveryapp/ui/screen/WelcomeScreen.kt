@@ -51,14 +51,13 @@ fun WelcomeScreen(navToLogin: () -> Unit, navToSignup: () -> Unit) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // 🟢 Buttons at the bottom
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
                     onClick = navToLogin,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0x88FF9800)), // 👈 same color
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0x88FF9800)),
                     shape = RoundedCornerShape(20),
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
@@ -74,7 +73,7 @@ fun WelcomeScreen(navToLogin: () -> Unit, navToSignup: () -> Unit) {
 
                 Button(
                     onClick = navToSignup,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0x88FF9800)), // 👈 same color
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0x88FF9800)),
                     shape = RoundedCornerShape(20),
                     modifier = Modifier
                         .fillMaxWidth(0.8f)

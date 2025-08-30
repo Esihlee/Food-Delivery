@@ -55,36 +55,40 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
-    // Compose BOM to manage versions
-    implementation(platform(libs.androidx.compose.bom))
+    // Compose BOM to manage Compose versions consistently
+    implementation(platform("androidx.compose:compose-bom:2023.06.01"))
 
-    // Compose UI & Material3 — rely on BOM versions only
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    // Compose UI libraries — no versions needed, managed by BOM
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
 
-    // Compose Activity & Navigation
-    implementation(libs.androidx.activity.compose)
+    // Material3 for Compose
+    implementation("androidx.compose.material3:material3")
+
+    // Compose Activity for lifecycle & integration
+    implementation("androidx.activity:activity-compose:1.7.2")
+
+    // Navigation for Compose
     implementation("androidx.navigation:navigation-compose:2.9.2")
 
     // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-gif:2.5.0")
 
-    // Room
+    // Room components for database
     implementation("androidx.room:room-runtime:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("io.coil-kt:coil-gif:2.5.0")
 
-    // Testing
+    // Testing dependencies
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.06.01"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    // Debugging tools for Compose
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
