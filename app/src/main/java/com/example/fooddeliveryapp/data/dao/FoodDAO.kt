@@ -9,23 +9,14 @@ import com.example.fooddeliveryapp.data.entity.Vendor
 interface FoodDAO {
     //Food
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFood(item: FoodItem)
+    suspend fun insertFood(food: FoodItem)
 
     @Query("SELECT * FROM food_items")
     suspend fun getAllFoods(): List<FoodItem>
 
     @Delete
-    suspend fun deleteFood(item: FoodItem)
+    suspend fun deleteFood(food: FoodItem)
 
-    //Vendor
-    @Query("SELECT * FROM vendors WHERE vendorId = :id LIMIT 1")
-    suspend fun getVendorById(id: Long): Vendor
-    @Query("UPDATE vendors SET isOnline = :isOnline WHERE vendorId = :id")
-    suspend fun updateVendorStatus(id: Long, isOnline: Boolean)
-    @Query("SELECT * FROM vendors")
-    suspend fun getAllVendors(): List<Vendor>
-    //new for Vendor
     @Query("SELECT * FROM food_items WHERE vendorId = :vendorId")
-    suspend fun getItemsByVendor(vendorId: Long): List<FoodItem>
-
+    suspend fun getFoodsByVendor(vendorId: Long): List<FoodItem>
 }
