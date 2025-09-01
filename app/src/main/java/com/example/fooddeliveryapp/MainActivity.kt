@@ -39,8 +39,6 @@ fun AppNavigation(db: AppDatabase) {
                     }
                 }
             )
-
-            LoginScreen(navController)
         }
 
         composable("signup") {

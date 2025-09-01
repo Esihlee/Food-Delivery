@@ -1,10 +1,12 @@
 package com.example.fooddeliveryapp.ui.screen
 
+import android.R.attr.vendor
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +51,12 @@ fun VendorUpdateScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    // TODO: Save vendor update
+                    val updatedVendor = vendor.copy(
+                        name = vendorName,
+                        phone = vendorPhone,
+                        email = vendorEmail
+                    )
+                    viewModel.updateVendor(updatedVendor)
                     navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -57,9 +64,12 @@ fun VendorUpdateScreen(navController: NavController) {
                 Text("Update Profile")
             }
 
+
             Button(onClick = { navController.popBackStack() }) {
                 Text("Cancel")
             }
         }
     }
 }
+
+

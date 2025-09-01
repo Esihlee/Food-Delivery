@@ -20,6 +20,14 @@ class VendorViewModel(private val repository: VendorRepository) : ViewModel() {
             }
         }
     }
+    class VendorViewModel(private val repository: VendorRepository) : ViewModel() {
+        fun updateVendor(vendor: Vendor) {
+            viewModelScope.launch {
+                repository.updateVendor(vendor)
+            }
+        }
+    }
+
 
     fun toggleStatus(vendor: Vendor) {
         viewModelScope.launch {
