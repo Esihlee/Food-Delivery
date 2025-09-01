@@ -6,10 +6,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.fooddeliveryapp.viewmodel.FoodViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VendorAddItemScreen(navController: NavController) {
+fun VendorAddItemScreen(navController: NavController, viewModel: FoodViewModel, vendorId: Long) {
     var itemName by remember { mutableStateOf("") }
     var itemPrice by remember { mutableStateOf("") }
 
@@ -41,7 +42,10 @@ fun VendorAddItemScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    // TODO: Save item to DB
+                    if (itemName.isNotBlank() && itemPrice.isNotBlank()) {
+                        val price = itemPrice.toDoubleOrNull() ?: 0.0
+                        viewModel.addFoodItem(itemName, price, vendorId)
+                    }
                     navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -55,3 +59,4 @@ fun VendorAddItemScreen(navController: NavController) {
         }
     }
 }
+
