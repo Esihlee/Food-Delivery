@@ -25,4 +25,14 @@ class FoodViewModel(application: Application) : AndroidViewModel(application) {
         val data = repo.getAll()
         onResult(data)
     }
+
+    fun getFoodsByVendor(vendorId: Long, onResult: (List<FoodItem>) -> Unit) = viewModelScope.launch {
+        val data = repo.getFoodsByVendor(vendorId)
+        onResult(data)
+    }
+
+    fun deleteFood(food: FoodItem, onComplete: () -> Unit) = viewModelScope.launch {
+        repo.delete(food)
+        onComplete()
+    }
 }
