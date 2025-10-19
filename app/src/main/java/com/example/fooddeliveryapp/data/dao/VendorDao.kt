@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface VendorDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vendor: Vendor)
+    suspend fun insert(vendors: Vendor)
 
     @Update
-    suspend fun update(vendor: Vendor)
+    suspend fun update(vendors: Vendor)
 
     @Query("SELECT * FROM vendors WHERE vendorId = :id")
     fun getVendorById(id: Long): Flow<Vendor>
