@@ -6,13 +6,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.fooddeliveryapp.data.entity.FoodItem
 import com.example.fooddeliveryapp.viewmodel.FoodViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VendorAddItemScreen(navController: NavController, viewModel: FoodViewModel, vendorId: Long) {
+fun VendorAddItemScreen(
+    navController: NavController,
+    viewModel: FoodViewModel,
+    vendorId: Long,
+
+) {
     var itemName by remember { mutableStateOf("") }
+    var itemDescription by remember { mutableStateOf("") }
     var itemPrice by remember { mutableStateOf("") }
+    var itemImageUrl by remember { mutableStateOf("") }
+
 
     Scaffold(
         topBar = {
@@ -34,9 +43,23 @@ fun VendorAddItemScreen(navController: NavController, viewModel: FoodViewModel, 
             )
 
             OutlinedTextField(
+                value = itemDescription,
+                onValueChange = { itemDescription = it },
+                label = { Text("Description") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
                 value = itemPrice,
                 onValueChange = { itemPrice = it },
                 label = { Text("Price") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = itemImageUrl,
+                onValueChange = { itemImageUrl = it },
+                label = { Text("Image URL") },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -44,19 +67,29 @@ fun VendorAddItemScreen(navController: NavController, viewModel: FoodViewModel, 
                 onClick = {
                     if (itemName.isNotBlank() && itemPrice.isNotBlank()) {
                         val price = itemPrice.toDoubleOrNull() ?: 0.0
-                        viewModel.addFoodItem(itemName, price, vendorId)
+                        val foodItem = FoodItem(
+                            name = itemName,
+                            description = itemDescription,
+                            price = price,
+                            imageUrl = itemImageUrl,
+                            vendorId = vendorId
+                        )
+
+                        viewModel.insertFood(foodItem)
+                        navController.popBackStack()
                     }
-                    navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Save Item")
             }
 
-            Button(onClick = { navController.popBackStack() }) {
+            Button(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text("Cancel")
             }
         }
     }
 }
-

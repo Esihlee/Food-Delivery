@@ -32,7 +32,8 @@ class FoodViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun deleteFood(food: FoodItem, onComplete: () -> Unit) = viewModelScope.launch {
-        repo.delete(food)
+        repo.deleteFood(food)
         onComplete()
     }
+
 }

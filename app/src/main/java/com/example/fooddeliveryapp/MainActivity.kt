@@ -16,16 +16,21 @@ import com.example.fooddeliveryapp.ui.screen.VendorAddItemScreen
 import com.example.fooddeliveryapp.ui.screen.VendorOrdersScreen
 import com.example.fooddeliveryapp.ui.screen.VendorUpdateScreen
 import com.example.fooddeliveryapp.ui.screen.VendorWelcomeScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.fooddeliveryapp.viewmodel.FoodViewModel
 
 @Composable
 fun AppNavigation(db: AppDatabase) {
     val navController = rememberNavController()
 
+    val foodViewModel: FoodViewModel = viewModel()
+
     NavHost(navController = navController, startDestination = "welcome") {
         composable("welcome") {
             WelcomeScreen(
                 navToLogin = { navController.navigate("login") },
-                navToSignup = { navController.navigate("signup") }
+                navToSignup = { navController.navigate("signup") },
+
             )
         }
 
@@ -33,18 +38,34 @@ fun AppNavigation(db: AppDatabase) {
             LoginScreen(
                 navController = navController,
                 userDao = db.userDao(),
-                onLoginSuccess = { enteredUsername ->
-                    navController.navigate("menu") {
-                        popUpTo("login") { inclusive = true }
+                onLoginSuccess = { email, role ->
+                    if (role == "Student") {
+                        navController.navigate("menu") {
+                            popUpTo("login") { inclusive = true }   // 🔹 clears login from back stack
+                        }
+                    } else if (role == "Vendor") {
+                        navController.navigate("vendor_welcome") {  // also fix route name
+                            popUpTo("login") { inclusive = true }
+                        }
                     }
                 }
             )
         }
-
         composable("signup") {
             SignupScreen(
                 navController = navController,
-                userDao = db.userDao()
+                userDao = db.userDao(),
+                onSignupSuccess = { email, role ->
+                    if (role == "Student") {
+                        navController.navigate("menu") {
+                            popUpTo("signup") { inclusive = true }   // 🔹 clears login from back stack
+                        }
+                    } else if (role == "Vendor") {
+                        navController.navigate("vendor_welcome") {  // also fix route name
+                            popUpTo("signup") { inclusive = true }
+                        }
+                    }
+                }
             )
         }
 
@@ -61,18 +82,19 @@ fun AppNavigation(db: AppDatabase) {
         composable("vendor_orders") {
             VendorOrdersScreen(navController)
         }
-        composable("vendor_add_item") {
-            VendorAddItemScreen(navController)
+        composable("vendor_add_item/{vendorId}") { backStackEntry ->
+            val vendorId = backStackEntry.arguments?.getString("vendorId")?.toLongOrNull() ?: 0L
+            VendorAddItemScreen(
+                navController = navController,
+                viewModel = foodViewModel,
+                vendorId = vendorId
+            )
         }
-        composable("vendor_update") {
-            VendorUpdateScreen(navController)
+        composable("vendor_update/{vendorId}") { backStackEntry ->
+            val vendorId = backStackEntry.arguments?.getString("vendorId")?.toLongOrNull() ?: 0L
+            VendorUpdateScreen(navController, vendorId)
         }
-//
-//        // 🔹 Student Home
-//        composable("student_home") {
-//            StudentHomeScreen(navController)
-//        }
-//
+
 //        // 🔹 Lecturer Home
 //        composable("lecturer_home") {
 //            LecturerHomeScreen(navController)

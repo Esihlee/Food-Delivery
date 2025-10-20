@@ -30,11 +30,15 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     navController: NavController,
     userDao: UserDAO,
-    onLoginSuccess: (String) -> Unit
+    onLoginSuccess: (String, String) -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    var expanded by remember { mutableStateOf(false) }
+    var selectedRole by remember { mutableStateOf("Student") }
+
     val orange = Color(0xFFFF9800)
     val black = Color(0xFF000000)
 
@@ -84,6 +88,43 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // Role Dropdown
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded }
+            ) {
+                OutlinedTextField(
+                    value = selectedRole,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Select Role") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier.menuAnchor(),
+                    colors = textFieldColors
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "Student") },
+                        onClick = {
+                            selectedRole = "Student"
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Vendor") },
+                        onClick = {
+                            selectedRole = "Vendor"
+                            expanded = false
+                        }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -111,7 +152,6 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    errorMessage = null
                     if (email.isBlank() || password.isBlank()) {
                         errorMessage = "Please enter email and password"
                         return@Button
@@ -120,7 +160,7 @@ fun LoginScreen(
                     coroutineScope.launch {
                         val user = userDao.validateUser(email, password)
                         if (user != null) {
-                            onLoginSuccess(user.email)
+                            onLoginSuccess(user.email, user.role)
                         } else {
                             errorMessage = "Invalid email or password"
                         }
