@@ -14,6 +14,9 @@ interface FoodDAO {
     @Query("SELECT * FROM food_items")
     suspend fun getAllFoods(): List<FoodItem>
 
+    @Query("SELECT * FROM food_items WHERE vendorId = :vendorId")
+    suspend fun getFoodsByVendor(vendorId: Long): List<FoodItem>
+
     @Delete
     suspend fun deleteFood(item: FoodItem)
 
@@ -24,5 +27,6 @@ interface FoodDAO {
     suspend fun updateVendorStatus(id: Long, isOnline: Boolean)
     @Query("SELECT * FROM vendors")
     suspend fun getAllVendors(): List<Vendor>
+
 
 }

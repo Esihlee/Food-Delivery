@@ -30,7 +30,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignupScreen(navController: NavController, userDao: UserDAO) {
+fun SignupScreen(
+    navController: NavController,
+    userDao: UserDAO,
+    onSignupSuccess: (email: String, role: String) -> Unit
+
+) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -39,7 +44,7 @@ fun SignupScreen(navController: NavController, userDao: UserDAO) {
     var expanded by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    val roles = listOf("Student", "Lecturer", "Vendor")
+    val roles = listOf("Student", "Vendor")
     val black = Color(0xFF000000)
     val orange = Color(0xFFFF9800)
 
@@ -138,6 +143,7 @@ fun SignupScreen(navController: NavController, userDao: UserDAO) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Role Dropdown (Student or Vendor)
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded }
@@ -148,7 +154,7 @@ fun SignupScreen(navController: NavController, userDao: UserDAO) {
                     readOnly = true,
                     label = { Text("Select Role") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.menuAnchor(),
                     colors = textFieldColors
                 )
                 ExposedDropdownMenu(
@@ -157,7 +163,7 @@ fun SignupScreen(navController: NavController, userDao: UserDAO) {
                 ) {
                     roles.forEach { role ->
                         DropdownMenuItem(
-                            text = { Text(role) },
+                            text = { Text(text = role) },
                             onClick = {
                                 selectedRole = role
                                 expanded = false
@@ -183,18 +189,27 @@ fun SignupScreen(navController: NavController, userDao: UserDAO) {
                     }
 
                     coroutineScope.launch {
-                        val existingUser = userDao.getUserByEmail(email)
-                        if (existingUser != null) {
-                            errorMessage = "Email already registered"
-                        } else {
-                            val newUser = User(
-                                email = email,
-                                name = name,
-                                password = password,
-                                role = selectedRole
-                            )
-                            userDao.insertUser(newUser)
-                            navController.navigate("login")
+                        try {
+                            val existingUser = userDao.getUserByEmail(email)
+                            if (existingUser != null) {
+                                errorMessage = "Email already registered"
+                            } else {
+                                val user = User(
+                                    email = email,
+                                    name = name,
+                                    password = password,
+                                    role = selectedRole
+                                )
+                                userDao.insertUser(user)
+
+                                // Navigate back to login
+                                navController.navigate("login") {
+                                    popUpTo("signup") { inclusive = true }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            errorMessage = "Error: ${e.localizedMessage}"
                         }
                     }
                 },
