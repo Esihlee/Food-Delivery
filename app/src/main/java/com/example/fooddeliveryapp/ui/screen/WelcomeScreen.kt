@@ -42,7 +42,7 @@ fun WelcomeScreen(navToLogin: () -> Unit, navToSignup: () -> Unit) {
             )
 
             Text(
-                text = "WELCOME TO UNI-EATS",
+                text = "WELCOME TO fooddeliveryapp",
                 fontSize = 55.sp,
                 fontFamily = customFont,
                 fontWeight = FontWeight.Bold,
