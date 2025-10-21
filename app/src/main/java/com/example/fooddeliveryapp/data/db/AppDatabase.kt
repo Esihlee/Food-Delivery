@@ -14,6 +14,9 @@ import com.example.fooddeliveryapp.data.entity.Vendor
 @Database(entities = [User::class, FoodItem::class, Vendor::class], version = 3,exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDAO
+
+    abstract fun driverDao(): DriverDAO
+    abstract fun orderDao(): OrderDAO
     abstract fun foodDao(): FoodDAO
     abstract fun vendorDao(): VendorDao
 
