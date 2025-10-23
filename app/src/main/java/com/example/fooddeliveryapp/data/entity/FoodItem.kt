@@ -10,5 +10,8 @@ data class FoodItem(
     val description: String,
     val price: Double,
     val imageUrl: String,
-    val vendorId: Long
+    val vendorId: Long,
+    val category: String,
+    val tag: String,
+    val availability: String
 )

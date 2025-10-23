@@ -82,7 +82,7 @@ fun AppNavigation(db: AppDatabase) {
         composable("vendor_orders") {
             VendorOrdersScreen(navController)
         }
-        composable("vendor_add_item/{vendorId}") { backStackEntry ->
+        composable("vendor_add_item") { backStackEntry ->
             val vendorId = backStackEntry.arguments?.getString("vendorId")?.toLongOrNull() ?: 0L
             VendorAddItemScreen(
                 navController = navController,
@@ -90,9 +90,10 @@ fun AppNavigation(db: AppDatabase) {
                 vendorId = vendorId
             )
         }
-        composable("vendor_update/{vendorId}") { backStackEntry ->
+        composable("vendor_update") { backStackEntry ->
             val vendorId = backStackEntry.arguments?.getString("vendorId")?.toLongOrNull() ?: 0L
             VendorUpdateScreen(navController, vendorId)
+
         }
 
 //        // 🔹 Lecturer Home
