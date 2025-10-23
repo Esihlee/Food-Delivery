@@ -3,13 +3,16 @@ package com.example.fooddeliveryapp.ui.screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -18,24 +21,26 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.decode.GifDecoder
-import coil.request.ImageRequest
 import com.example.fooddeliveryapp.R
-import androidx.compose.foundation.shape.RoundedCornerShape
-import coil.compose.rememberAsyncImagePainter
-
+import com.example.fooddeliveryapp.data.dao.UserDAO
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    userDao: UserDAO,
+    onLoginSuccess: (String, String) -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var selectedRole by remember { mutableStateOf("Student") }
-    var expanded by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    val roles = listOf("Student", "Lecturer", "Vendor")
-    val black = Color(0xFF000000)
+    var expanded by remember { mutableStateOf(false) }
+    var selectedRole by remember { mutableStateOf("Student") }
+
     val orange = Color(0xFFFF9800)
+    val black = Color(0xFF000000)
 
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         unfocusedBorderColor = black,
@@ -46,22 +51,23 @@ fun LoginScreen(navController: NavController) {
         focusedTextColor = black,
         unfocusedTextColor = black
     )
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(R.drawable.pizza)
-            .decoderFactory(GifDecoder.Factory())
-            .build()
-    )
-    val customFont = FontFamily(
-        Font(R.font.luckiest_guy)
-    )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(24.dp)
-    ) {
+    val customFont = FontFamily(Font(R.font.luckiest_guy))
+    val coroutineScope = rememberCoroutineScope()
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.student_home_bg),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White.copy(alpha = 0.7f))
+        )
 
         Column(
             modifier = Modifier
@@ -70,27 +76,19 @@ fun LoginScreen(navController: NavController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Login Uni-Eats",
-                fontSize = 55.sp,
+                text = "Login UNI-EATS",
                 fontFamily = customFont,
+                fontSize = 55.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFFF9800) // Bright Orange
-            )
-
-            Image(
-                painter = painter,
-                contentDescription = "Login Animation",
-                modifier = Modifier
-                    .size(300.dp)
-                    .padding(top = 12.dp)
+                color = orange
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // Role Dropdown
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded }
@@ -101,22 +99,27 @@ fun LoginScreen(navController: NavController) {
                     readOnly = true,
                     label = { Text("Select Role") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.menuAnchor(),
                     colors = textFieldColors
                 )
                 ExposedDropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    roles.forEach { role ->
-                        DropdownMenuItem(
-                            text = { Text(role) },
-                            onClick = {
-                                selectedRole = role
-                                expanded = false
-                            }
-                        )
-                    }
+                    DropdownMenuItem(
+                        text = { Text(text = "Student") },
+                        onClick = {
+                            selectedRole = "Student"
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Vendor") },
+                        onClick = {
+                            selectedRole = "Vendor"
+                            expanded = false
+                        }
+                    )
                 }
             }
 
@@ -143,26 +146,41 @@ fun LoginScreen(navController: NavController) {
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 colors = textFieldColors
-
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
-                    when (selectedRole) {
-                        "Student" -> navController.navigate("student_home")
-                        "Lecturer" -> navController.navigate("lecturer_home")
-                        "Vendor" -> navController.navigate("vendor_home")
+                    if (email.isBlank() || password.isBlank()) {
+                        errorMessage = "Please enter email and password"
+                        return@Button
+                    }
+
+                    coroutineScope.launch {
+                        val user = userDao.validateUser(email, password)
+                        if (user != null) {
+                            onLoginSuccess(user.email, user.role)
+                        } else {
+                            errorMessage = "Invalid email or password"
+                        }
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = orange),
-                shape = RoundedCornerShape(percent = 15)
+                shape = RoundedCornerShape(20)
             ) {
                 Text("LOGIN", color = Color.White)
+            }
+
+            if (errorMessage != null) {
+                Text(
+                    text = errorMessage!!,
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
 
             Spacer(modifier = Modifier.height(12.dp))
