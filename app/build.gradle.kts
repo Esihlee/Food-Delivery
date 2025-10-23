@@ -80,6 +80,8 @@ dependencies {
 
     // Room components for database
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.runtime.livedata)
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 

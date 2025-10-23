@@ -8,7 +8,7 @@ import com.example.fooddeliveryapp.data.entity.Vendor
 @Dao
 interface FoodDAO {
     //Food
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertFood(item: FoodItem)
 
     @Query("SELECT * FROM food_items")

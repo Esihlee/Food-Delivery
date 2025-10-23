@@ -33,6 +33,14 @@ class VendorViewModel(private val repository: VendorRepository) : ViewModel() {
             }
         }
     }
+    class VendorViewModel(private val repository: VendorRepository) : ViewModel() {
+        fun updateVendor(vendor: Vendor) {
+            viewModelScope.launch {
+                repository.updateVendor(vendor)
+            }
+        }
+    }
+
 
     /**
      * Update vendor information (name, phone, email, etc.)
